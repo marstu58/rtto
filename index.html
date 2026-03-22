@@ -26,8 +26,6 @@
 
 <style>
   :root{
-    --base-size: clamp(16px, 1.2vw + 12px, 20px);
-    --scale: 1.5; /* +50% */
     --text-color: #111;
     --link-color: #0a58ca;
   }
@@ -36,7 +34,7 @@
 
   body {
     font-family: 'Noto Sans', 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    font-size: calc(var(--base-size) * var(--scale));
+    font-size: 20px;
     line-height: 1.4;
     color: var(--text-color);
 
@@ -74,18 +72,10 @@
   }
   a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-  /* QR + actions */
-  #qrcode { margin-top: 1rem; display: inline-block; }
-  #qrcode img, #qrcode canvas { width: 120px; height: 120px; }
-
-  .actions { margin-top: 0.75rem; display: grid; gap: 0.5rem; justify-items: center; }
-  .note { font-size: 0.75em; color: #555; }
-
   footer { margin-top: 1rem; font-size: 0.8em; color: #555; }
 
   @media (max-width: 420px) {
     #container { gap: 0.75rem; padding: 1rem; }
-    #qrcode img, #qrcode canvas { width: 90px; height: 90px; }
   }
 
   @media print {
@@ -94,7 +84,6 @@
     #container { gap: 8pt; padding: 0; }
     #header img { width: 80mm; }
     a { color: #000; text-decoration: none; }
-    #qrcode { display: none; } /* hide QR in print */
   }
 </style>
 </head>
@@ -102,11 +91,10 @@
 
 <div id="container">
   <div id="header">
-    <h1>
+    <div>
       <img src="https://www.rtto.com/images/rtto2018-1200x200.png"
            width="420" height="70" alt="Logo of RTTO LLC" />
-    </h1>
-    <p class="description"></p>
+    </div>
   </div>
 
   <div id="wrapper">
@@ -121,15 +109,8 @@
     </div>
 
     <p>
-      Contact: <a href="mailto:info@rtto.com">info@rtto.com</a><br />
+      Contact: <a href="/cdn-cgi/l/email-protection#61080f070e211315150e4f020e0c"><span class="__cf_email__" data-cfemail="88e1e6eee7c8fafcfce7a6ebe7e5">[email&#160;protected]</span></a><br />
     </p>
-  </div>
-
-  <!-- QR Code (contact card) -->
-  <div id="qrcode" aria-label="QR code to add contact" role="img"></div>
-  <div class="actions">
-    <a id="vcardLink" href="#" download="Mark_Stuhmer_RTTO.vcf">Download vCard</a>
-    <div class="note">Scan QR to add contact • or download the vCard</div>
   </div>
 
   <footer>
@@ -137,10 +118,7 @@
   </footer>
 </div>
 
-<!-- QRCode library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // 1) Auto year
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -153,61 +131,4 @@
     var n = ['+1', '858', '752', '7260'];
     var display = '(' + n[1] + ') ' + n[2] + '\u2011' + n[3]; // non-breaking hyphen
 
-    var a = document.createElement('a');
-    a.href = 'tel:' + n[0] + n[1] + n[2] + n[3];
-    a.textContent = display;
-
-    // replace placeholder
-    holder.textContent = '';
-    holder.appendChild(a);
-  })();
-
-  // 3) vCard (download link) + QR (MECARD) for "Add Contact"
-  (function () {
-    // vCard (short, clean 3.0)
-    var v = [
-      'BEGIN:VCARD',
-      'VERSION:3.0',
-      'N:Stuhmer;Mark;;;',
-      'FN:Mark Stuhmer',
-      'ORG:RTTO LLC',
-      'TITLE:',
-      'TEL;TYPE=WORK,VOICE:+1-858-752-7260',
-      'EMAIL;TYPE=INTERNET:info@rtto.com',
-      'ADR;TYPE=WORK:;;4629 Cass St. Ste 81;San Diego;CA;92109;USA',
-      'URL:https://rtto.com',
-      'END:VCARD'
-    ].join('\\r\\n');
-
-    // Set downloadable data URI
-    var vLink = document.getElementById('vcardLink');
-    if (vLink) {
-      vLink.href = 'data:text/vcard;charset=utf-8,' + encodeURIComponent(v);
-    }
-
-    // MECARD string for QR (shorter than full vCard -> better scanning)
-    var mecard = 'MECARD:N:Stuhmer,Mark;ORG:RTTO LLC;TEL:18587527260;EMAIL:info@rtto.com;ADR:4629 Cass St. Ste 81, San Diego, CA 92109;URL:https://rtto.com;;';
-
-    // Build QR
-    var el = document.getElementById('qrcode');
-    if (el && window.QRCode) {
-      el.innerHTML = '';
-      new QRCode(el, {
-        text: mecard,
-        width: 150,
-        height: 150,
-        correctLevel: QRCode.CorrectLevel.M
-      });
-
-      // Optional: tap QR to open site
-      el.style.cursor = 'pointer';
-      el.title = 'Open https://rtto.com';
-      el.addEventListener('click', function () {
-        window.location.href = 'https://rtto.com';
-      });
-    }
-  })();
-</script>
-
-</body>
-</html>
+    var a = documen
