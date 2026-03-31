@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta name="google-site-verification" content="DBl3BLRHo-6R_wruz_d_B4YEqzBioXjGuQudaZirnVo" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="rtto-wave-round.ico" type="image/x-icon" />
+<title>RTTO</title>
+
+<!-- Canonical + social previews -->
+<link rel="canonical" href="https://rtto.com" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://rtto.com" />
+<meta property="og:title" content="RTTO — Mark Stuhmer" />
+<meta property="og:site_name" content="RTTO" />
+<meta property="og:description" content="Contact RTTO LLC • Mark Stuhmer, San Diego, CA • info@rtto.com • (858) 752-7260" />
+<meta property="og:image" content="https://www.rtto.com/rtto2018-1200x200.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="RTTO — Mark Stuhmer" />
+<meta name="twitter:description" content="Contact RTTO LLC • Mark Stuhmer, San Diego, CA • info@rtto.com • (858) 752-7260" />
+<meta name="twitter:image" content="https://www.rtto.com/rtto2018-1200x200.png" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --base-size: clamp(16px, 1.2vw + 12px, 20px);
+    --scale: 1.5; /* +50% */
+    --text-color: #111;
+    --link-color: #0a58ca;
+  }
+
+  html, body { height: 100%; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans', 'Noto Sans Devanagari', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: calc(var(--base-size) * var(--scale));
+    line-height: 1.4;
+    color: var(--text-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 100vh;
+  }
+
+  #container { display: grid; gap: 1rem; padding: 1.5rem; }
+
+  #header img {
+    width: min(420px, 80vw);
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Links + subtle hover underline */
+  a {
+    color: var(--link-color);
+    text-decoration: none;
+    position: relative;
+  }
+  a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 100%; height: 2px;
+    background-color: var(--link-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+  }
+  a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* QR + actions */
+  #qrcode { margin-top: 1rem; display: inline-block; }
+  #qrcode img, #qrcode canvas { width: 120px; height: 120px; }
+
+  .actions { margin-top: 0.75rem; display: grid; gap: 0.5rem; justify-items: center; }
+  .note { font-size: 0.75em; color: #555; }
+
+  footer { margin-top: 1rem; font-size: 0.8em; color: #555; }
+
+  @media (max-width: 420px) {
+    #container { gap: 0.75rem; padding: 1rem; }
+    #qrcode img, #qrcode canvas { width: 90px; height: 90px; }
+  }
+
+  @media print {
+    @page { size: A4; margin: 20mm; }
+    html, body { height: auto; min-height: 0; }
+    #container { gap: 8pt; padding: 0; }
+    #header img { width: 80mm; }
+    a { color: #000; text-decoration: none; }
+    #qrcode { display: none; } /* hide QR in print */
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+  <div id="header">
+    <h1>
+      <img src="https://www.rtto.com/rtto2018-1200x200.png"
+           width="420" height="70" alt="Logo of RTTO LLC" />
+    </h1>
+    <p class="description"></p>
+  </div>
+
+  <div id="wrapper">
+    <div id="content">
+      <p>
+        Mark Stuhmer<br />
+        4629 Cass St. Ste 81<br />
+        San Diego, CA 92109<br />
+        <!-- Clickable phone gets built below to deter scrapers -->
+        <span id="phone-holder">(loading phone…)</span><br />
+      </p>
+    </div>
+
+    <p>
+      Contact: <a href="mailto:info@rtto.com">info@rtto.com</a><br />
+    </p>
+  </div>
+
+  <!-- QR Code (contact card) -->
+  <div id="qrcode" aria-label="QR code to add contact" role="img"></div>
+  <div class="actions">
+    <a id="vcardLink" href="#" download="Mark_Stuhmer_RTTO.vcf">Download vCard</a>
+    <div class="note">Scan QR to add contact • or download the vCard</div>
+  </div>
+
+  <footer>
+    &copy; <span id="year"></span> RTTO LLC. All rights reserved.
+  </footer>
+</div>
+
+<!-- QRCode library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<script>
+  // 1) Auto year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // 2) Build bot-resistant phone link
+  (function(){
+    var holder = document.getElementById('phone-holder');
+    if (!holder) return;
+
+    // number parts (simple obfuscation)
+    var n = ['+1', '858', '752', '7260'];
+    var display = '(' + n[1] + ') ' + n[2] + '\u2011' + n[3]; // non-breaking hyphen
+
+    var a = document.createElement('a');
+    a.href = 'tel:' + n[0] + n[1] + n[2] + n[3];
+    a.textContent = display;
+
+    // replace placeholder
+    holder.textContent = '';
+    holder.appendChild(a);
+  })();
+
+  // 3) vCard (download link) + QR (MECARD) for "Add Contact"
+  (function () {
+    // vCard (short, clean 3.0)
+    var v = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'N:Stuhmer;Mark;;;',
+      'FN:Mark Stuhmer',
+      'ORG:RTTO LLC',
+      'TITLE:',
+      'TEL;TYPE=WORK,VOICE:+1-858-752-7260',
+      'EMAIL;TYPE=INTERNET:info@rtto.com',
+      'ADR;TYPE=WORK:;;4629 Cass St. Ste 81;San Diego;CA;92109;USA',
+      'URL:https://rtto.com',
+      'END:VCARD'
+    ].join('\\r\\n');
+
+    // Set downloadable data URI
+    var vLink = document.getElementById('vcardLink');
+    if (vLink) {
+      vLink.href = 'data:text/vcard;charset=utf-8,' + encodeURIComponent(v);
+    }
+
+    // MECARD string for QR (shorter than full vCard -> better scanning)
+    var mecard = 'MECARD:N:Stuhmer,Mark;ORG:RTTO LLC;TEL:18587527260;EMAIL:info@rtto.com;ADR:4629 Cass St. Ste 81, San Diego, CA 92109;URL:https://rtto.com;;';
+
+    // Build QR
+    var el = document.getElementById('qrcode');
+    if (el && window.QRCode) {
+      el.innerHTML = '';
+      new QRCode(el, {
+        text: mecard,
+        width: 150,
+        height: 150,
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      // Optional: tap QR to open site
+      el.style.cursor = 'pointer';
+      el.title = 'Open https://rtto.com';
+      el.addEventListener('click', function () {
+        window.location.href = 'https://rtto.com';
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
